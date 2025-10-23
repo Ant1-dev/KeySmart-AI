@@ -6,11 +6,14 @@ import Link from 'next/link';
 import '../app/styles/results.css';
 
 export default function ResultsDashboard() {
-  const [result, setResult] = useState<MatchResult | null>(() => {
+  const [result] = useState<MatchResult | null>(() => {
+    if (typeof window === 'undefined') return null;
     const storedResult = sessionStorage.getItem('matchResult');
     return storedResult ? JSON.parse(storedResult) : null;
   });
-  const [profile, setProfile] = useState<UserProfile | null>(() => {
+
+  const [profile] = useState<UserProfile | null>(() => {
+    if (typeof window === 'undefined') return null;
     const storedProfile = sessionStorage.getItem('userProfile');
     return storedProfile ? JSON.parse(storedProfile) : null;
   });
