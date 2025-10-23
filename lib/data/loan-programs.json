@@ -1,0 +1,84 @@
+{
+  "programs": [
+    {
+      "id": "fha",
+      "name": "FHA Loan",
+      "type": "FHA",
+      "minCreditScore": 580,
+      "minDownPaymentPercent": 3.5,
+      "maxDTIPercent": 43,
+      "benefits": [
+        "Low down payment (3.5%)",
+        "Accepts credit scores as low as 580",
+        "Perfect for first-time buyers",
+        "Closing costs can be gifted"
+      ],
+      "description": "Government-backed loan insured by the Federal Housing Administration, designed to help first-time and low-to-moderate income buyers.",
+      "requiresFirstTime": false
+    },
+    {
+      "id": "va",
+      "name": "VA Loan",
+      "type": "VA",
+      "minCreditScore": 580,
+      "minDownPaymentPercent": 0,
+      "maxDTIPercent": 41,
+      "benefits": [
+        "No down payment required",
+        "No mortgage insurance",
+        "Competitive interest rates",
+        "No prepayment penalty"
+      ],
+      "description": "Guaranteed by the Department of Veterans Affairs for active-duty service members, veterans, and eligible spouses.",
+      "requiresMilitaryService": true
+    },
+    {
+      "id": "conventional-97",
+      "name": "Conventional 97",
+      "type": "Conventional",
+      "minCreditScore": 620,
+      "minDownPaymentPercent": 3,
+      "maxDTIPercent": 43,
+      "benefits": [
+        "Low down payment (3%)",
+        "Lower mortgage insurance than FHA",
+        "Can cancel PMI at 20% equity",
+        "More flexible property types"
+      ],
+      "description": "Fannie Mae and Freddie Mac program allowing down payments as low as 3% for qualified borrowers.",
+      "requiresFirstTime": true
+    },
+    {
+      "id": "usda",
+      "name": "USDA Loan",
+      "type": "USDA",
+      "minCreditScore": 640,
+      "minDownPaymentPercent": 0,
+      "maxDTIPercent": 41,
+      "benefits": [
+        "No down payment required",
+        "Low mortgage insurance",
+        "Below-market interest rates",
+        "Can include closing costs in loan"
+      ],
+      "description": "USDA Rural Development loan for properties in eligible rural and suburban areas with income limits.",
+      "requiresFirstTime": false
+    },
+    {
+      "id": "conventional",
+      "name": "Conventional Loan",
+      "type": "Conventional",
+      "minCreditScore": 680,
+      "minDownPaymentPercent": 5,
+      "maxDTIPercent": 43,
+      "benefits": [
+        "More flexibility in property types",
+        "No upfront mortgage insurance",
+        "Can cancel PMI at 20% equity",
+        "Higher loan limits"
+      ],
+      "description": "Standard loan not backed by government, typically requiring higher credit scores and larger down payments.",
+      "requiresFirstTime": false
+    }
+  ]
+}
