@@ -25,3 +25,162 @@
     padding: 0 1rem;
   }
 }
+
+/* Animated Gradient Background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient-bg {
+  background: linear-gradient(
+    -45deg,
+    #000000,
+    #1a0000,
+    #0a0a0a,
+    #1f1f1f,
+    #0d0d0d
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.orb-red {
+  background: radial-gradient(circle, #dc2626 0%, transparent 70%);
+  width: 500px;
+  height: 500px;
+  top: -100px;
+  right: -100px;
+}
+
+.orb-gold {
+  background: radial-gradient(circle, #eab308 0%, transparent 70%);
+  width: 400px;
+  height: 400px;
+  bottom: -50px;
+  left: -50px;
+  animation-delay: -7s;
+}
+/* Button Glow Effects */
+.btn-primary,
+.submit-button,
+.action-button.red,
+.action-btn-primary,
+.action-btn-secondary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary::before,
+.submit-button::before,
+.action-button.red::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.2),
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover::before,
+.submit-button:hover::before,
+.action-button.red:hover::before {
+  opacity: 1;
+}
+
+.btn-primary:hover,
+.submit-button:not(:disabled):hover {
+  box-shadow: 0 0 30px rgba(220, 38, 38, 0.6),
+              0 0 60px rgba(220, 38, 38, 0.3),
+              inset 0 0 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.action-button:hover {
+  box-shadow: 0 0 30px currentColor,
+              0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Button Ripple Effect */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.button-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  width: 20px;
+  height: 20px;
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* Gradient Text */
+@keyframes gradientText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    #dc2626,
+    #eab308,
+    #dc2626,
+    #eab308
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientText 3s ease infinite;
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(220, 38, 38, 0.5),
+               0 0 40px rgba(234, 179, 8, 0.3);
+}

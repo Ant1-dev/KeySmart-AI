@@ -22,6 +22,7 @@ export default function ResultsDashboard() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [currentExplanation, setCurrentExplanation] = useState('');
   const [loadingExplanation, setLoadingExplanation] = useState(false);
+  const [scoreAnimated, setScoreAnimated] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [readinessAnalysis, setReadinessAnalysis] = useState<any>(null);
 
@@ -47,6 +48,7 @@ export default function ResultsDashboard() {
       };
       loadAnalysis();
     }
+    setTimeout(() => setScoreAnimated(true), 100);
   }, [result, profile]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,29 +131,32 @@ export default function ResultsDashboard() {
         <div className="readiness-content">
           <div className="score-gauge">
             <svg width="160" height="160" className="score-circle">
-              <circle
-                cx="80"
-                cy="80"
-                r="70"
-                stroke="#374151"
-                strokeWidth="12"
-                fill="none"
-              />
-              <circle
-                cx="80"
-                cy="80"
-                r="70"
-                stroke={readinessColor === 'green' ? '#16a34a' : readinessColor === 'yellow' ? '#eab308' : '#dc2626'}
-                strokeWidth="12"
-                fill="none"
-                strokeDasharray={`${result.readinessScore * 4.4} 440`}
-                strokeLinecap="round"
-              />
+            <circle
+            cx="80"
+            cy="80"
+            r="70"
+            stroke={readinessColor === 'green' ? '#16a34a' : readinessColor === 'yellow' ? '#eab308' : '#dc2626'}
+            strokeWidth="12"
+            fill="none"
+            strokeDasharray="440"
+            strokeDashoffset={scoreAnimated ? `${440 - (440 * result.readinessScore / 100)}` : 440}
+            strokeLinecap="round"
+            style={{
+                transition: 'stroke-dashoffset 2s ease-out'
+            }}
+            />
+
             </svg>
-            <div className={`score-number ${readinessColor}`}>
-              {result.readinessScore}%
-            </div>
-          </div>
+
+  <div 
+    className={`score-number ${readinessColor} score-number-animated`}
+    style={{
+      animation: scoreAnimated ? 'scorePulse 2s ease-in-out infinite' : 'none'
+    }}
+  >
+    {scoreAnimated ? result.readinessScore : 0}%
+  </div>
+</div>
           <div className="readiness-message">
             <h3 className={readinessColor}>{getReadinessMessage(result.readinessScore)}</h3>
             <p>Here&apos;s what you qualify for based on your profile</p>

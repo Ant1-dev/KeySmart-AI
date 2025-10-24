@@ -343,9 +343,18 @@
 .messages-container::-webkit-scrollbar-thumb:hover {
   background: #4b5563;
 }
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: float 20s ease-in-out infinite;
+  z-index: 0; /* <- ensure it's behind content */
+}
+
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 748px) {
   .chat-interface {
     height: calc(100vh - 8rem);
     border-radius: 0.5rem;
@@ -365,6 +374,12 @@
 
   .message {
     max-width: 90%;
+  }
+  .suggested-questions {
+    display: none;
+  }
+  .suggested-buttons {
+    display: none;
   }
 
   .input-container {
