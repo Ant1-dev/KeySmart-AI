@@ -18,6 +18,63 @@ export default function ResultsDashboard() {
     return storedProfile ? JSON.parse(storedProfile) : null;
   });
 
+  // AI Features State
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [currentExplanation, setCurrentExplanation] = useState('');
+  const [loadingExplanation, setLoadingExplanation] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [readinessAnalysis, setReadinessAnalysis] = useState<any>(null);
+
+  // Load AI Readiness Analysis on mount
+  useEffect(() => {
+    if (result && profile) {
+      const loadAnalysis = async () => {
+        try {
+          const response = await fetch('/api/readiness-analysis', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userProfile: profile,
+              readinessScore: result.readinessScore,
+              matches: result.matches
+            })
+          });
+          const data = await response.json();
+          setReadinessAnalysis(data.analysis);
+        } catch (error) {
+          console.error('Error loading analysis:', error);
+        }
+      };
+      loadAnalysis();
+    }
+  }, [result, profile]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleExplainLoan = async (match: any) => {
+    setLoadingExplanation(true);
+    setShowExplanation(true);
+    
+    try {
+      const response = await fetch('/api/explain-loan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          loanType: match.program.name,
+          userProfile: profile,
+          matchedProgram: match.program
+        })
+      });
+
+      const data = await response.json();
+      setCurrentExplanation(data.explanation);
+    } catch (error) {
+      console.error('Error:', error);
+      setCurrentExplanation('Sorry, unable to generate explanation right now.');
+    } finally {
+      setLoadingExplanation(false);
+    }
+  };
+
   if (!result || !profile) {
     return (
       <div className="loading-container">
@@ -126,6 +183,119 @@ export default function ResultsDashboard() {
           </div>
         </div>
       </section>
+
+      {/* AI READINESS ANALYSIS - NEW! */}
+      {readinessAnalysis && (
+        <section style={{
+          background: 'linear-gradient(135deg, #854d0e 0%, #713f12 100%)',
+          padding: '1.5rem',
+          borderRadius: '1rem',
+          border: '2px solid #ca8a04',
+          marginBottom: '2rem'
+        }}>
+          <h3 style={{
+            fontSize: '1.75rem',
+            fontWeight: 'bold',
+            color: '#ffffff',
+            marginBottom: '1rem'
+          }}>
+            🎯 Your AI-Powered Roadmap
+          </h3>
+          <p style={{
+            color: '#fef3c7',
+            marginBottom: '1.5rem',
+            fontSize: '1.125rem',
+            lineHeight: '1.6'
+          }}>
+            {readinessAnalysis.summary}
+          </p>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1rem',
+            marginBottom: '1rem'
+          }}>
+            <div style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              padding: '1rem',
+              borderRadius: '0.75rem'
+            }}>
+              <h4 style={{
+                fontWeight: 'bold',
+                color: '#ffffff',
+                marginBottom: '0.75rem',
+                fontSize: '1rem'
+              }}>
+                📅 Immediate (0-30 days):
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {readinessAnalysis.immediateSteps?.map((step: string, i: number) => (
+                  <li key={i} style={{
+                    color: '#fef3c7',
+                    fontSize: '0.875rem',
+                    marginBottom: '0.5rem',
+                    paddingLeft: '1.25rem',
+                    position: 'relative'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      left: 0,
+                      color: '#16a34a',
+                      fontWeight: 'bold'
+                    }}>✓</span>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              padding: '1rem',
+              borderRadius: '0.75rem'
+            }}>
+              <h4 style={{
+                fontWeight: 'bold',
+                color: '#ffffff',
+                marginBottom: '0.75rem',
+                fontSize: '1rem'
+              }}>
+                🎯 Short-term (1-3 months):
+              </h4>
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {readinessAnalysis.shortTermSteps?.map((step: string, i: number) => (
+                  <li key={i} style={{
+                    color: '#fef3c7',
+                    fontSize: '0.875rem',
+                    marginBottom: '0.5rem',
+                    paddingLeft: '1.25rem',
+                    position: 'relative'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      left: 0,
+                      color: '#16a34a',
+                      fontWeight: 'bold'
+                    }}>✓</span>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          
+          <p style={{
+            marginTop: '1rem',
+            textAlign: 'center',
+            color: '#ffffff',
+            fontWeight: 'bold',
+            fontSize: '1.125rem'
+          }}>
+            🏠 Estimated Ready Date: <span style={{ color: '#fbbf24' }}>{readinessAnalysis.readyDate}</span>
+          </p>
+        </section>
+      )}
 
       {/* Affordable Range */}
       {result.matches.length > 0 && (
@@ -253,7 +423,12 @@ export default function ResultsDashboard() {
             </div>
 
             <div className="loan-actions">
-              <button className="btn-primary">Why This Loan?</button>
+              <button 
+                className="btn-primary"
+                onClick={() => handleExplainLoan(match)}
+              >
+                ✨ Why This Loan?
+              </button>
               <button className="btn-secondary">Learn More</button>
             </div>
           </div>
@@ -289,6 +464,105 @@ export default function ResultsDashboard() {
           🎯 Find Housing Counselors
         </Link>
       </div>
+
+      {/* AI LOAN EXPLANATION MODAL - NEW! */}
+      {showExplanation && (
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 50,
+            padding: '1rem'
+          }}
+          onClick={() => setShowExplanation(false)}
+        >
+          <div 
+            style={{
+              backgroundColor: '#111827',
+              borderRadius: '1rem',
+              maxWidth: '42rem',
+              width: '100%',
+              padding: '2rem',
+              border: '2px solid #374151',
+              maxHeight: '80vh',
+              overflowY: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              marginBottom: '1.5rem'
+            }}>
+              <h3 style={{
+                fontSize: '1.75rem',
+                fontWeight: 'bold',
+                color: '#ffffff'
+              }}>
+                ✨ AI-Powered Loan Analysis
+              </h3>
+              <button 
+                onClick={() => setShowExplanation(false)}
+                style={{
+                  color: '#9ca3af',
+                  fontSize: '2rem',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  lineHeight: 1
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            {loadingExplanation ? (
+              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                <div className="loading-spinner" style={{
+                  margin: '0 auto 1rem',
+                  width: '3rem',
+                  height: '3rem'
+                }}></div>
+                <p style={{ color: '#9ca3af' }}>
+                  Analyzing your profile and generating personalized explanation...
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                color: '#d1d5db',
+                lineHeight: '1.8',
+                whiteSpace: 'pre-wrap',
+                fontSize: '1rem'
+              }}>
+                {currentExplanation}
+              </div>
+            )}
+            
+            <button
+              onClick={() => setShowExplanation(false)}
+              style={{
+                marginTop: '1.5rem',
+                width: '100%',
+                background: 'linear-gradient(to right, #dc2626, #b91c1c)',
+                color: '#ffffff',
+                padding: '0.75rem',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
