@@ -39,7 +39,9 @@ https://key-smart-ai.vercel.app/
 
 ## Screenshots
 
-[Insert project screenshots]
+<img src="./public/landingPage.png">
+<img src="./public/results.png">
+<img src="./public/chatbot.png">
 
 ---
 
