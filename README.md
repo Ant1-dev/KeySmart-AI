@@ -68,7 +68,6 @@ Open `http://localhost:3000`
 
 ## Contact
 
-**[Your Name]**  
 antoinemorrison122@gmail.com
 
 ---
